@@ -1,0 +1,12 @@
+{
+  "main": "src/index.ts",
+  "scripts": {
+    "start": "npx tsx ."
+  },
+  "dependencies": {
+    "tsx": "^4.23.15"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5"
+  }
+}
