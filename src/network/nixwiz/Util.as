@@ -1,4 +1,4 @@
-package {
+package network.nixwiz {
     import flash.utils.ByteArray;
 
     public class Util {

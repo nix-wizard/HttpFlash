@@ -1,9 +1,9 @@
-package network.nixwiz.http.io {
+package network.nixwiz.io {
     import flash.net.Socket;
     import flash.events.ProgressEvent;
     import flash.utils.ByteArray;
-    import network.nixwiz.http.io.IReaderInput;
-    import network.nixwiz.http.Promise;
+    import network.nixwiz.io.IReaderInput;
+    import network.nixwiz.Promise;
     import flash.errors.EOFError;
 
     public class ReaderInputSocket implements IReaderInput {

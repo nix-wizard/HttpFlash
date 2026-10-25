@@ -1,4 +1,4 @@
-package {
+package network.nixwiz {
 	import flash.text.TextField;
 	import flash.text.StyleSheet;
 	import flash.display.DisplayObjectContainer;

@@ -1,4 +1,4 @@
-package network.nixwiz.http {
+package network.nixwiz {
     /** Pale imitation of the `Promise` class from ES6. */
     public class Promise {
         private var state:String = 'pending';

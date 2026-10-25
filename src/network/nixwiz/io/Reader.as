@@ -1,6 +1,8 @@
-package network.nixwiz.http.io {
+package network.nixwiz.io {
     import flash.utils.ByteArray;
-    import network.nixwiz.http.Promise;
+    import network.nixwiz.Promise;
+    import network.nixwiz.Util;
+    import network.nixwiz.Logger;
 
     public class Reader {
         public var input:IReaderInput;
