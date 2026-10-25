@@ -1,11 +1,11 @@
-package {
+package network.nixwiz.http {
     /** Pale imitation of the `Promise` class from ES6. */
     public class Promise {
         private var state:String = 'pending';
         private var value:* = undefined;
         private var reason:* = undefined;
-        private var onFulfilledCallbacks:Array = [];
-        private var onRejectedCallbacks:Array = [];
+        private var onFulfilledCallbacks:Vector.<Function> = new<Function>[];
+        private var onRejectedCallbacks:Vector.<Function> = new<Function>[];
 
         function Promise(executor:Function) {
             var resolve:Function = function(value_:*):void {
@@ -70,9 +70,15 @@ package {
             });
         }
 
-        /** Equivalent of ES6 `.catch()`. */
+        /** Equivalent of JS `.catch()`. */
         public function fail(onRejected:Function):Promise {
             return then(null, onRejected);
+        }
+
+        public static function resolve(value:* = undefined):Promise {
+            return new Promise(function(resolve:Function, _:*):void {
+                resolve(value);
+            });
         }
     }
 }
