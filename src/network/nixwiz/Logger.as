@@ -2,7 +2,7 @@ package network.nixwiz {
 	import flash.text.TextField;
 	import flash.text.StyleSheet;
 	import flash.display.DisplayObjectContainer;
-	import network.nixwiz.Misc;
+	import network.nixwiz.Util;
 
 	public class Logger {
 		private static var messages:Array = [];
@@ -38,7 +38,7 @@ package network.nixwiz {
 			textField.htmlText =
 				'<body>' +
 				messages.map(function(message:String, ..._):String {
-					return Misc.escapeHTML(message);
+					return Util.escapeHTML(message);
 				}).join('\r') +
 				'</body>';
 

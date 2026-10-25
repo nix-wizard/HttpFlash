@@ -1,5 +1,5 @@
 package network.nixwiz.http {
-	import network.nixwiz.Misc;
+	import network.nixwiz.Util;
 
 	public class HTTPHeader {
 		public var name:String = undefined;
@@ -19,7 +19,7 @@ package network.nixwiz.http {
 			var name:String = undefined;
 			var value:String = undefined;
 
-			header = Misc.stripNewlines(header);
+			header = Util.stripNewlines(header);
 			var headerData:Array = header.split(": ", 2);
 
 			name = headerData[0];
