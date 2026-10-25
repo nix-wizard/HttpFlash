@@ -1,11 +1,13 @@
 package network.nixwiz.http {
-	import network.nixwiz.http.HTTPHeader;
-
 	public class HTTPHeaders {
 		public var headers:Vector.<HTTPHeader> = undefined;
 
 		public function HTTPHeaders(headers:Vector.<HTTPHeader>) {
 			this.headers = headers;
+		}
+
+		public function push(header:HTTPHeader):void {
+			headers.push(header);
 		}
 
 		public function toString():String {

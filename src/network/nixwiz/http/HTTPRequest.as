@@ -1,6 +1,5 @@
 package network.nixwiz.http {
 	import flash.utils.ByteArray;
-	import network.nixwiz.http.HTTPHeader;
 
 	public class HTTPRequest {
 		public var method:String = undefined;
@@ -13,7 +12,7 @@ package network.nixwiz.http {
 
 		public var data:ByteArray = undefined;
 
-		public function HTTPRequest(method:String, resource:String, protocol:String, headers:HTTPHeaders, data:ByteArray = null) {
+		public function HTTPRequest(method:String, resource:String, protocol:String, headers:HTTPHeaders = null, data:ByteArray = null) {
 			this.method = method;
 			this.resource = resource;
 			this.protocol = protocol;
@@ -25,17 +24,15 @@ package network.nixwiz.http {
 			var method:String = undefined;
 			var resource:String = undefined;
 			var protocol:String = undefined;
-			var headers:HTTPHeaders = undefined;
-			var data:ByteArray = null;
-
-			var headerList:Vector.<HTTPHeader> = new Vector.<HTTPHeader>;
+			var headers:HTTPHeaders = new HTTPHeaders(new Vector.<HTTPHeader>());
+			var data:ByteArray = new ByteArray();
 
 			request.position = 0;
 			var requestString:String = request.readUTFBytes(request.bytesAvailable);
 
 			var headerEnd:int = requestString.indexOf("\r\n\r\n");
 			if (headerEnd == -1) {
-				throw new ArgumentError("Invalid HTTP request: Iissing header terminator.");
+				throw new ArgumentError("Invalid HTTP request: Missing header terminator.");
 			}
 
 			var headerString:String = requestString.substring(0, headerEnd);
@@ -46,7 +43,7 @@ package network.nixwiz.http {
 
 			var headerLines:Array = headerString.split(/\r?\n/);
 
-			for (var index:uint in headerLines) {
+			for (var index:uint = 0; index < headerLines.length; index++) {
 				if (index == 0) { // Request
 					var requestParams:Array = headerLines[index].split(' ', 3);
 					method = requestParams[0];
@@ -57,10 +54,9 @@ package network.nixwiz.http {
 					}
 				}
 				else { // Headers
-					headerList.push(HTTPHeader.headerFromString(headerLines[index]));
+					headers.push(HTTPHeader.headerFromString(headerLines[index]));
 				}
 			}
-			headers = new HTTPHeaders(headerList);
 
 			return new HTTPRequest(method, resource, protocol, headers, data);
 		}

@@ -26,14 +26,14 @@ package {
 		}
 
 		public static function log(...values):void {
-			trace(message);
-
 			var message:String = values
 				.map(function(value:*, ..._):String {
 					return value is String ? value : value.toString();
 				})
 				.join(' ');
 
+			trace(message);
+			
 			messages.push(message);
 			textField.htmlText =
 				'<body>' +

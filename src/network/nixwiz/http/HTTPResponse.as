@@ -1,7 +1,5 @@
 package network.nixwiz.http {
 	import flash.utils.ByteArray;
-	import network.nixwiz.http.HTTPStatus;
-	import network.nixwiz.http.HTTPHeaders;
 
 	public class HTTPResponse {
 		public const protocol:String = "HTTP/1.1";
@@ -12,23 +10,29 @@ package network.nixwiz.http {
 
 		public var data:ByteArray = undefined;
 
-		public function HTTPResponse(status:HTTPStatus, headers:HTTPHeaders, data:ByteArray = null) {
+		public function HTTPResponse(status:HTTPStatus, headers:HTTPHeaders = null, data:ByteArray = null) {
 			this.status = status;
 			this.headers = headers;
 			this.data = data;
 		}
 
 		public function toByteArray():ByteArray {
-			var bytes:ByteArray = undefined;
-			var beforeData:String =
-				protocol + ' ' + status.toString() + "\r\n"
-				+ headers.toString() + "\r\n"
+			var bytes:ByteArray = new ByteArray();
+			var header:String = protocol + ' ' + status.toString() + "\r\n"
+			if (headers != null) {
+				header = header + headers.toString() + "\r\n\r\n";
+			}
+			else {
+				header = header + "\r\n";
+			}
 
-			bytes.writeUTFBytes(beforeData)
+			bytes.writeUTFBytes(header)
 			if (data != null) {
+				data.position = 0;
 				bytes.writeBytes(data);
 			}
 
+			bytes.position = 0;
 			return bytes;
 		}
 	}
