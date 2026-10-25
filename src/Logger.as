@@ -42,7 +42,7 @@ package {
 				}).join('\r') +
 				'</body>';
 
-			textField.scrollV = textField.bottomScrollV;
-		}
-	}
+            textField.scrollV = textField.maxScrollV;
+        }
+    }
 }
