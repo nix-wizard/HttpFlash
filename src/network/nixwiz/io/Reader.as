@@ -27,7 +27,8 @@ package network.nixwiz.io {
 
             function loop():Promise {
                 return input.readChunk()
-                    .then(function(chunk:ByteArray):Promise {
+                    .then(function(chunk:ByteArray):* {
+                        Logger.log(input, chunk.length);
                         chunks.push(chunk);
                         length += chunk.length;
                         received += chunk.length;
@@ -42,6 +43,7 @@ package network.nixwiz.io {
          * @return A <code>ByteArray</code> promise.
          */
         public function read(size:uint):Promise {
+            Logger.log(input, size);
             return readChunks(size)
                 .then(function():ByteArray {
                     var result:ByteArray = new ByteArray();
@@ -66,7 +68,7 @@ package network.nixwiz.io {
                         }
                     }
 
-                    Logger.log('result = ' + Util.dumpBytes(result));
+                    result.position = 0;
                     return result;
                 });
         }

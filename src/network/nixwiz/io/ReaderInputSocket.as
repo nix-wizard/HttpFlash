@@ -5,6 +5,8 @@ package network.nixwiz.io {
     import network.nixwiz.io.IReaderInput;
     import network.nixwiz.Promise;
     import flash.errors.EOFError;
+    import network.nixwiz.Logger;
+    import network.nixwiz.Util;
 
     public class ReaderInputSocket implements IReaderInput {
         public var socket:Socket;

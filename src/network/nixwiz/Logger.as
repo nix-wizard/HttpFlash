@@ -25,15 +25,14 @@ package network.nixwiz {
 			parent.addChild(textField);
 		}
 
-		public static function log(...values):void {
-			var message:String = values
-				.map(function(value:*, ..._):String {
-					return value is String ? value : value.toString();
-				})
+		private static function valuesToString(values:Array):String {
+			return values
+				.map(function(value:*, ..._):String { return value + ''; })
 				.join(' ');
+		}
 
+		private static function write(message:String):void {
 			trace(message);
-			
 			messages.push(message);
 			textField.htmlText =
 				'<body>' +
@@ -43,6 +42,10 @@ package network.nixwiz {
 				'</body>';
 
             textField.scrollV = textField.maxScrollV;
+		}
+
+		public static function log(...values):void {
+			write(valuesToString(values));
         }
     }
 }

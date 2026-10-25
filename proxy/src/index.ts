@@ -3,9 +3,9 @@ import { Reader, StreamEndedError, Writer } from './util';
 import { POLICY_FILE } from './policy-file';
 
 enum PacketKind {
-    CONNECT, // connId
-    DISCONNECT, // connId
-    DATA, // connId, length, data
+    Connect, // connId
+    Disconnect, // connId
+    Data, // connId, length, data
 }
 
 const flashServer = createServer();
@@ -23,23 +23,25 @@ flashServer.on('connection', async (flashSocket) => {
     publicServer.on('connection', async (publicSocket) => {
         const connId = conns.length;
         conns.push(publicSocket);
+        console.log(`public client connected: ${connId}`);
 
         function writePacketHead(kind: PacketKind) {
             flashWriter.writeUint8(kind);
             flashWriter.writeUint32(connId);
+            console.log(`sent packet to Flash client: ${PacketKind[kind]}, ${connId}`);
         }
 
-        writePacketHead(PacketKind.CONNECT);
+        writePacketHead(PacketKind.Connect);
 
         for await (const chunk_ of publicSocket) {
             const chunk = chunk_ as Buffer;
 
-            writePacketHead(PacketKind.DATA);
+            writePacketHead(PacketKind.Data);
             flashWriter.writeUint32(chunk.length);
             flashWriter.write(chunk);
         }
 
-        writePacketHead(PacketKind.DISCONNECT);
+        writePacketHead(PacketKind.Disconnect);
     });
 
     publicServer.listen(6767, () => {
@@ -52,10 +54,7 @@ flashServer.on('connection', async (flashSocket) => {
             kind = await flashReader.readUint8();
         }
         catch (exc) {
-            if (exc instanceof StreamEndedError) {
-                console.log('Flash server disconnected');
-                break;
-            }
+            if (exc instanceof StreamEndedError) { break; }
             throw exc;
         }
 
@@ -68,15 +67,17 @@ flashServer.on('connection', async (flashSocket) => {
             return conn;
         }
 
+        console.log(`received packet from Flash client: ${PacketKind[kind]}`);
+
         switch (kind) {
-            case PacketKind.DATA: {
+            case PacketKind.Data: {
                 const conn = await readConn();
                 const dataLength = await flashReader.readUint32();
                 const data = await flashReader.read(dataLength);
                 conn.write(data);
             } break;
 
-            case PacketKind.DISCONNECT: {
+            case PacketKind.Disconnect: {
                 const conn = await readConn();
                 conn.end();
             } break;
@@ -96,6 +97,9 @@ flashServer.on('connection', async (flashSocket) => {
             default: throw new Error(`invalid packet kind: ${kind}`);
         }
     }
+
+    console.log('Flash server disconnected');
+    publicServer.close();
 });
 
 flashServer.listen(6768, () => {

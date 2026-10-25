@@ -25,7 +25,7 @@ package network.nixwiz {
 		}
 		
 		public static function escapeHTML(text:String):String {
-			return text.replace(/[&<>"']/g, function (match:String, ..._:Array):String {
+			return text.replace(/[&<>"']/g, function (match:String, ..._):String {
 				return {
 					'&': '&amp;',
 					'<': '&lt;',

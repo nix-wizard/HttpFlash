@@ -1,5 +1,5 @@
 package network.nixwiz {
-    /** Pale imitation of the `Promise` class from ES6. */
+    /** Pale imitation of the <code>Promise</code> class from ES6. */
     public class Promise {
         private var state:String = 'pending';
         private var value:* = undefined;
@@ -48,13 +48,16 @@ package network.nixwiz {
                         try {
                             var result:* = fn(value);
                             if (result is Promise) {
-                                result.then(resolve, reject);
+                                (result as Promise).then(resolve, reject);
                             }
                             else {
                                 resolve(result);
                             }
                         }
-                        catch (error:*) { reject(error); }
+                        catch (error:*) {
+                            reject(error);
+                            Logger.log('Possibly uncaught error in promise: ' + error);
+                        }
                     };
                 }
 
@@ -70,7 +73,7 @@ package network.nixwiz {
             });
         }
 
-        /** Equivalent of JS `.catch()`. */
+        /** Equivalent of JS <code>.catch()</code>. */
         public function fail(onRejected:Function):Promise {
             return then(null, onRejected);
         }
