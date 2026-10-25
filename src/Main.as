@@ -1,12 +1,11 @@
 package {
-	import flash.display.Sprite;
-	import network.nixwiz.http.HTTPMocket;
+    import flash.display.Sprite;
 
-	public class Main extends Sprite {
-		private var socket:HTTPMocket;
-		
-		public function Main() {
-			
-		}
-	}
+    public class Main extends Sprite {
+        function Main() {
+            Logger.init(this);
+            Logger.log(50);
+            Logger.log(<></>.toXMLString());
+        }
+    }
 }
