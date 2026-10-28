@@ -62,8 +62,8 @@ package network.nixwiz.bridge {
                                     return reader.read(length);
                                 })
                                 .then(function(data:ByteArray):Promise {
-                                    var connection3:Connection = connections[id];
-                                    connection3.onData(data);
+                                    connection = connections[id];
+                                    connection.onData(data);
 
                                     return run();
                                 });
