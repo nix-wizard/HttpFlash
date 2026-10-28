@@ -5,10 +5,9 @@ package {
 	import network.nixwiz.Promise;
 	import network.nixwiz.bridge.Bridge;
 	import network.nixwiz.http.Request;
-	import network.nixwiz.http.Header;
 	import network.nixwiz.http.Server;
-	import network.nixwiz.Util;
 	import network.nixwiz.http.Response;
+	import network.nixwiz.Util;
 
 	public class Main extends Sprite {
 		function Main() {

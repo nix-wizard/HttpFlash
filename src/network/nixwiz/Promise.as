@@ -78,6 +78,7 @@ package network.nixwiz {
             return then(null, onRejected);
         }
 
+        /** @return A promise that immediately resolves to <code>value</code>. */
         public static function resolve(value:* = undefined):Promise {
             return new Promise(function(resolve:Function, _:*):void {
                 resolve(value);

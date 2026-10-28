@@ -28,10 +28,10 @@ flashServer.on('connection', async (flashSocket) => {
         function writePacketHead(kind: PacketKind) {
             flashWriter.writeUint8(kind);
             flashWriter.writeUint32(connId);
-            console.log(`sent packet to Flash client: ${PacketKind[kind]}, ${connId}`);
         }
 
         writePacketHead(PacketKind.Connect);
+        console.log(`> Connect { connId: ${connId} }`);
 
         for await (const chunk_ of publicSocket) {
             const chunk = chunk_ as Buffer;
@@ -39,9 +39,11 @@ flashServer.on('connection', async (flashSocket) => {
             writePacketHead(PacketKind.Data);
             flashWriter.writeUint32(chunk.length);
             flashWriter.write(chunk);
+            console.log(`> Data { connId: ${connId}, length: ${chunk.length} }`);
         }
 
         writePacketHead(PacketKind.Disconnect);
+        console.log(`> Disconnect { connId: ${connId} }`);
     });
 
     publicServer.listen(6767, () => {
@@ -58,8 +60,10 @@ flashServer.on('connection', async (flashSocket) => {
             throw exc;
         }
 
+        let connId: number;
+
         async function readConn() {
-            const connId = await flashReader.readUint32();
+            connId = await flashReader.readUint32();
             const conn: Socket | undefined = conns[connId];
             if (conn === undefined) {
                 throw new Error(`invalid connection ID: ${connId}`);
@@ -67,18 +71,22 @@ flashServer.on('connection', async (flashSocket) => {
             return conn;
         }
 
-        console.log(`received packet from Flash client: ${PacketKind[kind]}`);
-
         switch (kind) {
             case PacketKind.Data: {
                 const conn = await readConn();
-                const dataLength = await flashReader.readUint32();
-                const data = await flashReader.read(dataLength);
+                const length = await flashReader.readUint32();
+                const data = await flashReader.read(length);
+
+                console.log(`< Data { connId: ${connId!}, length: ${data.length} }`);
+
                 conn.write(data);
             } break;
 
             case PacketKind.Disconnect: {
                 const conn = await readConn();
+
+                console.log(`< Disconnect { connId: ${connId!} }`);
+
                 conn.end();
             } break;
 

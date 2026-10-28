@@ -1,14 +1,16 @@
 package network.nixwiz.http {
-	public class RequestHead {
+	import flash.utils.Dictionary;
+
+	internal class RequestHead {
 		public var method:String;
 
 		public var url:String;
 
 		public var protocol:String;
 
-		public var headers:Vector.<Header>;
+		public var headers:Dictionary;
 
-		public function RequestHead(method:String, url:String, protocol:String, headers:Vector.<Header> = null) {
+		function RequestHead(method:String, url:String, protocol:String, headers:Dictionary = null) {
 			this.method = method;
 			this.url = url;
 			this.protocol = protocol;
@@ -18,12 +20,12 @@ package network.nixwiz.http {
 		public static function deserialize(str:String):RequestHead {
 			var lines:Array = str.split(/\r?\n/);
 			if (lines.length === 0) {
-				throw new ArgumentError('Invalid request: no lines');
+				throw new ArgumentError('Invalid request: No lines');
 			}
 
 			var firstLineParts:Array = lines[0].split(' ', 3);
 			if (firstLineParts.length < 3) {
-				throw new ArgumentError('Invalid request: first line must have 3 parts');
+				throw new ArgumentError('Invalid request: First line must have 3 parts');
 			}
 
 			var method:String = firstLineParts[0];
@@ -33,10 +35,16 @@ package network.nixwiz.http {
 				throw new ArgumentError("Invalid request: Invalid protocol");
 			}
 
-			var headers:Vector.<Header> = new <Header>[];
+			var headers:Dictionary = new Dictionary();
 			for each (var line:String in lines.slice(1)) {
 				if (line === '') { continue; }
-				headers.push(Header.deserialize(line));
+
+				var parts:Array = line.split(": ", 2);
+				if (parts.length !== 2) {
+					throw new ArgumentError('Invalid request: Invalid header');
+				}
+
+				headers[parts[0]] = parts[1];
 			}
 
 			return new RequestHead(method, url, protocol, headers);

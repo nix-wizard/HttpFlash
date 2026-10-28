@@ -26,6 +26,7 @@ package network.nixwiz.bridge {
         /** @return A <code>void</code> promise. */
         public function run():Promise {
             var this_:Bridge = this;
+            var connection:Connection;
             var kind:uint;
 
             return reader.readUint8()
@@ -40,18 +41,16 @@ package network.nixwiz.bridge {
                 .then(function(id:uint):Promise {
                     switch (kind) {
                         case PacketKind.CONNECT: {
-                            var connection1:Connection = new Connection(this_, id);
-                            Logger.log('connect:', connection1);
-                            onConnection(connection1);
-                            connections[id] = connection1;
+                            connection = new Connection(this_, id);
+                            onConnection(connection);
+                            connections[id] = connection;
 
                             return run();
                         } break;
 
                         case PacketKind.DISCONNECT: {
-                            var connection2:Connection = connections[id];
-                            Logger.log('disconnect:', connection2);
-                            connection2.close();
+                            connection = connections[id];
+                            connection.close();
                             delete connections[id];
 
                             return run();
@@ -64,7 +63,6 @@ package network.nixwiz.bridge {
                                 })
                                 .then(function(data:ByteArray):Promise {
                                     var connection3:Connection = connections[id];
-                                    Logger.log('data:', connection3, data.length);
                                     connection3.onData(data);
 
                                     return run();
