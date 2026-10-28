@@ -4,8 +4,8 @@ package network.nixwiz {
         private var state:String = 'pending';
         private var value:* = undefined;
         private var reason:* = undefined;
-        private var onFulfilledCallbacks:Vector.<Function> = new<Function>[];
-        private var onRejectedCallbacks:Vector.<Function> = new<Function>[];
+        private var onFulfilledCallbacks:Vector.<Function> = new <Function>[];
+        private var onRejectedCallbacks:Vector.<Function> = new <Function>[];
 
         function Promise(executor:Function) {
             var resolve:Function = function(value_:*):void {

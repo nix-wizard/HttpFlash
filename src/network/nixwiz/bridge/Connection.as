@@ -4,39 +4,49 @@ package network.nixwiz.bridge {
 	import network.nixwiz.Promise;
 	import flash.net.Socket;
 	import network.nixwiz.Logger;
+	import flash.errors.EOFError;
 
 	public class Connection implements IReaderInput {
 		public var bridge:Bridge;
+
 		public var id:uint;
 
-		public var onData:Function = function(_:*):void { };
-		public var onClose:Function = function():void { };
+		public var socket:Socket;
+
+		// called by Bridge
+		internal var onData:Function = function(_:*):void { };
+		internal var onClose:Function = function():void { };
 
 		function Connection(bridge:Bridge, id:uint) {
 			this.bridge = bridge;
 			this.id = id;
+			socket = bridge.socket;
 		}
 
 		public function readChunk():Promise {
 			return new Promise(function(resolve:Function, reject:Function):void {
 				onData = resolve;
-				onClose = reject;
+				onClose = function():void { reject(new EOFError()); }
 			});
 		}
 
 		public function write(data:ByteArray):void {
-			var socket:Socket = this.bridge.socket;
 			socket.writeByte(PacketKind.DATA);
+			socket.writeUnsignedInt(id);
 			socket.writeUnsignedInt(data.length);
 			socket.writeBytes(data);
+			socket.flush();
 		}
 
 		public function close():void {
-			this.onClose();
+			socket.writeByte(PacketKind.DISCONNECT);
+			socket.writeUnsignedInt(id);
+			socket.flush();
+			onClose();
 		}
 
 		public function toString():String {
-			return 'HTTPConnection { id: ' + id + ' }';
+			return 'Connection { id: ' + id + ' }';
 		}
 	}
 }

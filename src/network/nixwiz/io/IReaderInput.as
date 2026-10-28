@@ -3,7 +3,7 @@ package network.nixwiz.io {
 
     /** An asynchronous input stream that yields chunks of indeterminate size. */
     public interface IReaderInput {
-        /** @return A <code>ByteArray</code> promise. */
+        /** @return A <code>ByteArray</code> promise that resolves to a chunk of any size. */
         function readChunk():Promise;
     }
 }

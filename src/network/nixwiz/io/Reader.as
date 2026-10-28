@@ -4,6 +4,7 @@ package network.nixwiz.io {
     import network.nixwiz.Util;
     import network.nixwiz.Logger;
 
+    /** Allows for reading fixed-size values from an asynchronous input stream that yields chunks of indeterminate size (<code>IReaderInput</code>). */
     public class Reader {
         public var input:IReaderInput;
         private var chunks:Vector.<ByteArray> = new <ByteArray>[];
@@ -21,14 +22,13 @@ package network.nixwiz.io {
          * Read data into <code>chunks</code> until <code>size</code> new bytes are available.
          * @return A <code>void</code> promise.
          */
-        private function readChunks(size:uint):Promise {
+        private function readIntoChunks(size:uint):Promise {
             required += size;
             if (received >= required) { return Promise.resolve(); }
 
             function loop():Promise {
                 return input.readChunk()
                     .then(function(chunk:ByteArray):* {
-                        Logger.log(input, chunk.length);
                         chunks.push(chunk);
                         length += chunk.length;
                         received += chunk.length;
@@ -43,8 +43,7 @@ package network.nixwiz.io {
          * @return A <code>ByteArray</code> promise.
          */
         public function read(size:uint):Promise {
-            Logger.log(input, size);
-            return readChunks(size)
+            return readIntoChunks(size)
                 .then(function():ByteArray {
                     var result:ByteArray = new ByteArray();
                     result.length = size;

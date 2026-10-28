@@ -5,10 +5,13 @@ package network.nixwiz {
 	import network.nixwiz.Util;
 
 	public class Logger {
+		private static var traceOnly:Boolean = true;
 		private static var messages:Array = [];
-		public static var textField:TextField;
+		public static var textField:TextField = null;
 
 		public static function init(parent:DisplayObjectContainer):void {
+			if (traceOnly) { return; }
+
 			var ss:StyleSheet = new StyleSheet();
 			ss.setStyle('body', {
 				fontFamily: '"Noto Sans Mono", "Liberation Mono", "DejaVu Sans Mono", mono',
@@ -33,6 +36,8 @@ package network.nixwiz {
 
 		private static function write(message:String):void {
 			trace(message);
+			if (traceOnly) { return; }
+
 			messages.push(message);
 			textField.htmlText =
 				'<body>' +

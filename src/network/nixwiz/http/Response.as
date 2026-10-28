@@ -1,33 +1,47 @@
 package network.nixwiz.http {
 	import flash.utils.ByteArray;
+	import flash.utils.Dictionary;
+	import network.nixwiz.Util;
 
 	public class Response {
-		public const protocol:String = "HTTP/1.1";
+		public static const protocol:String = "HTTP/1.1";
 		
 		public var status:uint;
 
-		public var headers:Vector.<Header>;
+		public var headers:Dictionary = new Dictionary();
 
-		public var data:ByteArray;
+		public var data:ByteArray = null;
 
-		public function Response(status:uint = Status.OK, headers:Vector.<Header> = null, data:ByteArray = null) {
+		function Response(status:uint = 200) {
 			this.status = status;
-			this.headers = headers;
-			this.data = data;
 		}
 
-		public function toByteArray():ByteArray {
+		public function addHeader(name:String, value:String):Response {
+			var normalizedName:String = name.toLowerCase();
+			if (headers.hasOwnProperty(normalizedName)) {
+				throw new ArgumentError('Header ' + JSON.stringify(name) + ' already exists');
+			}
+			headers[normalizedName] = value;
+			return this;
+		}
+
+		public function setData(data:ByteArray):Response {
+			this.data = data;
+			addHeader('content-length', data.length.toString());
+			return this;
+		}
+
+		public function setText(text:String):Response {
+			return setData(Util.encodeString(text));
+		}
+
+		public function serialize():ByteArray {
 			var bytes:ByteArray = new ByteArray();
 			var head:String = protocol + ' ' + status + ' ' + Status.codeToReason(status) + "\r\n";
-			if (headers != null) {
-				head += headers
-					.map(function(header:Header, _:*):String { return header.toString(); })
-					.join("\r\n");
-				head += "\r\n\r\n";
+			for (var name:String in headers) {
+				head += name + ": " + headers[name] + "\r\n";
 			}
-			else {
-				head += "\r\n";
-			}
+			head += "\r\n";
 
 			bytes.writeUTFBytes(head);
 			if (data != null) {

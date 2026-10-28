@@ -1,13 +1,14 @@
 package {
 	import flash.display.Sprite;
 	import network.nixwiz.Logger;
-	import flash.utils.ByteArray;
 	import flash.net.Socket;
 	import network.nixwiz.Promise;
 	import network.nixwiz.bridge.Bridge;
-	import network.nixwiz.bridge.Connection;
-	import network.nixwiz.io.Reader;
-	import network.nixwiz.http.RequestHead;
+	import network.nixwiz.http.Request;
+	import network.nixwiz.http.Header;
+	import network.nixwiz.http.Server;
+	import network.nixwiz.Util;
+	import network.nixwiz.http.Response;
 
 	public class Main extends Sprite {
 		function Main() {
@@ -16,36 +17,19 @@ package {
 
 			var socket:Socket = new Socket('localhost', 6768);
 			var bridge:Bridge = new Bridge(socket);
-			bridge.onConnection = function(connection:Connection):void {
-				var reader:Reader = new Reader(connection);
-				var buffer:ByteArray = new ByteArray();
-
-				function loop():Promise {
-					Logger.log('loop');
-					return reader.readUint8()
-						.then(function(byte:uint):* {
-							Logger.log('yum');
-							buffer.writeByte(byte);
-							if (
-								buffer.length >= 4 &&
-								buffer[buffer.length - 4] === 13 &&
-								buffer[buffer.length - 3] === 10 &&
-								buffer[buffer.length - 2] === 13 &&
-								buffer[buffer.length - 1] === 10
-							) {
-								Logger.log('end of head');
-								return;
-							}
-							return loop();
-						});
-				}
-
-				loop().then(function():void {
-					var head:RequestHead = RequestHead.fromString(buffer.toString());
-					Logger.log(head.url);
-				});
-			};
-			bridge.run();
+			var server:Server = new Server(bridge, function(request:Request):Promise {
+				return Promise.resolve(
+					new Response(200)
+						.addHeader('content-type', 'text/html')
+						.setText(
+							<body>
+								<h1>meow!</h1>
+								<p>you are at {request.url}</p>
+							</body>.toXMLString()
+						)
+				);
+			});
+			server.run();
 		}
 	}
 }

@@ -2,12 +2,6 @@ package network.nixwiz {
     import flash.utils.ByteArray;
 
     public class Util {
-        public static function bind(fn:Function, thisArg:*):Function {
-            return function(...args):* {
-                return fn.apply(thisArg, args);
-            }
-        }
-
         public static function dumpBytes(bytes:ByteArray):String {
             var result:String = '';
             for (var i:uint = 0; i < bytes.length; i++) {
@@ -18,6 +12,13 @@ package network.nixwiz {
                     (byte & 15).toString(16);
             }
             return result;
+        }
+
+        public static function encodeString(str:String):ByteArray {
+            var bytes:ByteArray = new ByteArray();
+            bytes.writeUTFBytes(str);
+            bytes.position = 0;
+            return bytes;
         }
 
         public static function stripNewlines(string:String):String {

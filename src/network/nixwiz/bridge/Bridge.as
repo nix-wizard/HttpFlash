@@ -11,7 +11,9 @@ package network.nixwiz.bridge {
 
     public class Bridge {
         public var socket:Socket;
+
         private var reader:Reader;
+
         public var connections:Dictionary = new Dictionary();
 
         public var onConnection:Function = function(_:*):void { };
@@ -62,8 +64,7 @@ package network.nixwiz.bridge {
                                 })
                                 .then(function(data:ByteArray):Promise {
                                     var connection3:Connection = connections[id];
-                                    Logger.log('data:', connection3, Util.dumpBytes(data));
-                                    connection3.close();
+                                    Logger.log('data:', connection3, data.length);
                                     connection3.onData(data);
 
                                     return run();
