@@ -7,7 +7,6 @@ package network.nixwiz {
 	import network.nixwiz.http.Request;
 	import network.nixwiz.http.Server;
 	import network.nixwiz.http.Response;
-	import network.nixwiz.Util;
 
 	public class Main extends Sprite {
 		function Main() {
@@ -17,16 +16,8 @@ package network.nixwiz {
 			var socket:Socket = new Socket('localhost', 6768);
 			var bridge:Bridge = new Bridge(socket);
 			var server:Server = new Server(bridge, function(request:Request):Promise {
-				return Promise.resolve(
-					new Response(200)
-						.addHeader('content-type', 'text/html')
-						.setText(
-							<body>
-								<h1>meow!</h1>
-								<p>you are at {request.url}</p>
-							</body>.toXMLString()
-						)
-				);
+				var response:Response = Backend.handleRequest(request);
+				return Promise.resolve(response);
 			});
 			server.run();
 		}

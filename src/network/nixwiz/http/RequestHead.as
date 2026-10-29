@@ -2,7 +2,7 @@ package network.nixwiz.http {
 	internal class RequestHead {
 		public var method:String;
 
-		public var url:String;
+		public var resource:String;
 
 		public var protocol:String;
 
@@ -10,7 +10,7 @@ package network.nixwiz.http {
 
 		function RequestHead(method:String, url:String, protocol:String, headers:Object = null) {
 			this.method = method;
-			this.url = url;
+			this.resource = url;
 			this.protocol = protocol;
 			this.headers = headers;
 		}

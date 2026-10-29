@@ -17,7 +17,7 @@ object=""
 i=0
 while IFS= LC_ALL=C read -r -d '' -u 9 file
 do
-	file="${file:28}"
+	file="${file:27}"
 
 	if [[ $declare != "" ]]; then
 		declare="$declare"$'\n'

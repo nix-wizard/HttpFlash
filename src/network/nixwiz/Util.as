@@ -36,5 +36,11 @@ package network.nixwiz {
 				}[match];
 			});
 		}
+
+        public static function getExt(path:String):String {
+            var file:Array = path.split('/');
+            var levels:Array = file[file.length-1].split('.');
+            return levels[levels.length-1];
+        }
     }
 }

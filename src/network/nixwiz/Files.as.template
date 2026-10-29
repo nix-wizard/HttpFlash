@@ -3,8 +3,26 @@ package network.nixwiz {
 	public class Files {
 		// DECLARE
 
-		public static const FilePaths:Object = {
+		public static const filePaths:Object = {
 			// OBJECT
+		}
+
+		public static const fileTypes:Object = {
+			"html": "text/html",
+			"css": "text/css",
+			"png": "image/png",
+			"jpeg": "image/jpeg",
+			"jpg": "image/jpeg",
+			"json": "application/json",
+			"txt": "text/plain",
+			"bin": "application/octet-stream"
+		}
+
+		public static function extToMime(ext:String):String {
+			if (fileTypes.hasOwnProperty(ext)) {
+				return fileTypes[ext];
+			}
+			return "application/octet-stream";
 		}
 	}
 }
