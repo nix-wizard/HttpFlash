@@ -1,6 +1,5 @@
 package network.nixwiz.http {
 	import flash.utils.ByteArray;
-	import flash.utils.Dictionary;
 	import network.nixwiz.Util;
 
 	public class Response {
@@ -8,7 +7,7 @@ package network.nixwiz.http {
 		
 		public var status:uint;
 
-		public var headers:Dictionary = new Dictionary();
+		public var headers:Object = new Object();
 
 		public var data:ByteArray = null;
 

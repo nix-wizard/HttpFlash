@@ -1,6 +1,5 @@
 package network.nixwiz.bridge {
     import flash.net.Socket;
-    import flash.utils.Dictionary;
     import network.nixwiz.io.Reader;
     import network.nixwiz.io.ReaderInputSocket;
     import network.nixwiz.Promise;
@@ -14,7 +13,7 @@ package network.nixwiz.bridge {
 
         private var reader:Reader;
 
-        public var connections:Dictionary = new Dictionary();
+        public var connections:Object = new Object();
 
         public var onConnection:Function = function(_:*):void { };
 

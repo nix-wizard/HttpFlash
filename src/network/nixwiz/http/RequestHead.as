@@ -1,6 +1,4 @@
 package network.nixwiz.http {
-	import flash.utils.Dictionary;
-
 	internal class RequestHead {
 		public var method:String;
 
@@ -8,9 +6,9 @@ package network.nixwiz.http {
 
 		public var protocol:String;
 
-		public var headers:Dictionary;
+		public var headers:Object;
 
-		function RequestHead(method:String, url:String, protocol:String, headers:Dictionary = null) {
+		function RequestHead(method:String, url:String, protocol:String, headers:Object = null) {
 			this.method = method;
 			this.url = url;
 			this.protocol = protocol;
@@ -35,7 +33,7 @@ package network.nixwiz.http {
 				throw new ArgumentError("Invalid request: Invalid protocol");
 			}
 
-			var headers:Dictionary = new Dictionary();
+			var headers:Object = new Object();
 			for each (var line:String in lines.slice(1)) {
 				if (line === '') { continue; }
 
