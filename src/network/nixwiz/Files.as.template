@@ -1,0 +1,10 @@
+package network.nixwiz {
+	import flash.utils.ByteArray;
+	public class Files {
+		// DECLARE
+
+		public static const FilePaths:Object = {
+			// OBJECT
+		}
+	}
+}
