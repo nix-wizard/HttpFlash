@@ -5,5 +5,5 @@
         ],
         "output": "bin/Main.swf"
     },
-    "mainClass": "Main"
+    "mainClass": "network.nixwiz.Main"
 }

@@ -1,4 +1,4 @@
-package {
+package network.nixwiz {
 	import flash.display.Sprite;
 	import network.nixwiz.Logger;
 	import flash.net.Socket;

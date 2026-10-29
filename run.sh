@@ -36,7 +36,7 @@ data="$(replace_all '// DECLARE' "$declare" <<<"$template" | \
 
 printf '%s\n' "$data" > ./src/network/nixwiz/Files.as
 
-mxmlc -o bin/Main.swf -debug src/Main.as
+mxmlc -source-path=src -o bin/Main.swf -debug src/network/nixwiz/Main.as
 
 (cd proxy; npm start | ts "%.T") &
 pid=$!
