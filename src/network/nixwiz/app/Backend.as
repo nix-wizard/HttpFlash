@@ -20,7 +20,7 @@ package network.nixwiz.app {
 				return new Response(Status.METHOD_NOT_ALLOWED);
 			}
 
-			var file:File = Files.files[request.resource];
+			var file:File = Files.files["static" + request.resource];
 			if (file != null) {
 				// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag
 				var etag:String = '"' + file + '"';
