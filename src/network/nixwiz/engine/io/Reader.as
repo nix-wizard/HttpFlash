@@ -1,8 +1,8 @@
-package network.nixwiz.io {
+package network.nixwiz.engine.io {
     import flash.utils.ByteArray;
-    import network.nixwiz.Promise;
-    import network.nixwiz.Util;
-    import network.nixwiz.Logger;
+    import network.nixwiz.engine.Promise;
+    import network.nixwiz.engine.Util;
+    import network.nixwiz.engine.Logger;
 
     /** Allows for reading fixed-size values from an asynchronous input stream that yields chunks of indeterminate size (<code>IReaderInput</code>). */
     public class Reader {

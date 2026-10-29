@@ -1,4 +1,4 @@
-package network.nixwiz.bridge {
+package network.nixwiz.engine.bridge {
     internal class PacketKind {
         public static var CONNECT:uint = 0;
         public static var DISCONNECT:uint = 1;

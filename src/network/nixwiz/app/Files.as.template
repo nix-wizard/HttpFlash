@@ -1,0 +1,12 @@
+// Files.as.template is to be processed by /build.sh
+
+package network.nixwiz.app {
+	import flash.utils.ByteArray;
+	public class Files {
+// DECLARE
+
+		public static const files:Object = {
+// OBJECT
+		}
+	}
+}

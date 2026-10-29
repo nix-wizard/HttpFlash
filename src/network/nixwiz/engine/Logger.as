@@ -1,8 +1,8 @@
-package network.nixwiz {
+package network.nixwiz.engine {
 	import flash.text.TextField;
 	import flash.text.StyleSheet;
 	import flash.display.DisplayObjectContainer;
-	import network.nixwiz.Util;
+	import network.nixwiz.engine.Util;
 
 	public class Logger {
 		private static var traceOnly:Boolean = true;

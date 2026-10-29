@@ -1,4 +1,4 @@
-package network.nixwiz {
+package network.nixwiz.engine {
     import flash.utils.ByteArray;
 
     public class Util {
@@ -38,9 +38,9 @@ package network.nixwiz {
 		}
 
         public static function getExt(path:String):String {
-            var file:Array = path.split('/');
-            var levels:Array = file[file.length-1].split('.');
-            return levels[levels.length-1];
+            var pathParts:Array = path.split('/');
+            var filenameParts:Array = pathParts[pathParts.length-1].split('.', 2);
+            return filenameParts[filenameParts.length-1];
         }
     }
 }

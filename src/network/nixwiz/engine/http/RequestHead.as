@@ -1,4 +1,4 @@
-package network.nixwiz.http {
+package network.nixwiz.engine.http {
 	internal class RequestHead {
 		public var method:String;
 
@@ -8,9 +8,9 @@ package network.nixwiz.http {
 
 		public var headers:Object;
 
-		function RequestHead(method:String, url:String, protocol:String, headers:Object = null) {
+		function RequestHead(method:String, resource:String, protocol:String, headers:Object) {
 			this.method = method;
-			this.resource = url;
+			this.resource = resource;
 			this.protocol = protocol;
 			this.headers = headers;
 		}
@@ -42,7 +42,7 @@ package network.nixwiz.http {
 					throw new ArgumentError('Invalid request: Invalid header');
 				}
 
-				headers[parts[0]] = parts[1];
+				headers[parts[0].toLowerCase()] = parts[1];
 			}
 
 			return new RequestHead(method, url, protocol, headers);

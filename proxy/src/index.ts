@@ -1,6 +1,7 @@
 import { createServer, Socket } from 'node:net';
 import { Reader, StreamEndedError, Writer } from './util';
 import { POLICY_FILE } from './policy-file';
+import { Readable } from 'node:stream';
 
 enum PacketKind {
     Connect, // connId
@@ -13,8 +14,8 @@ const flashServer = createServer();
 flashServer.on('connection', async (flashSocket) => {
     console.log('Flash client connected');
 
-    const flashWriter = new Writer(flashSocket);
-    const flashReader = new Reader(flashSocket);
+    const writer = new Writer(flashSocket);
+    const reader = new Reader(flashSocket);
 
     const conns: Socket[] = [];
 
@@ -26,8 +27,8 @@ flashServer.on('connection', async (flashSocket) => {
         console.log(`public client connected: ${connId}`);
 
         function writePacketHead(kind: PacketKind) {
-            flashWriter.writeUint8(kind);
-            flashWriter.writeUint32(connId);
+            writer.writeUint8(kind);
+            writer.writeUint32(connId);
         }
 
         writePacketHead(PacketKind.Connect);
@@ -37,12 +38,14 @@ flashServer.on('connection', async (flashSocket) => {
             const chunk = chunk_ as Buffer;
 
             writePacketHead(PacketKind.Data);
-            flashWriter.writeUint32(chunk.length);
-            flashWriter.write(chunk);
+            writer.writeUint32(chunk.length);
+            writer.write(chunk);
+            await writer.flush();
             console.log(`> Data { connId: ${connId}, length: ${chunk.length} }`);
         }
 
         writePacketHead(PacketKind.Disconnect);
+        await writer.flush();
         console.log(`> Disconnect { connId: ${connId} }`);
     });
 
@@ -53,7 +56,7 @@ flashServer.on('connection', async (flashSocket) => {
     while (true) {
         let kind: number;
         try {
-            kind = await flashReader.readUint8();
+            kind = await reader.readUint8();
         }
         catch (exc) {
             if (exc instanceof StreamEndedError) { break; }
@@ -63,7 +66,7 @@ flashServer.on('connection', async (flashSocket) => {
         let connId: number;
 
         async function readConn() {
-            connId = await flashReader.readUint32();
+            connId = await reader.readUint32();
             const conn: Socket | undefined = conns[connId];
             if (conn === undefined) {
                 throw new Error(`invalid connection ID: ${connId}`);
@@ -74,8 +77,8 @@ flashServer.on('connection', async (flashSocket) => {
         switch (kind) {
             case PacketKind.Data: {
                 const conn = await readConn();
-                const length = await flashReader.readUint32();
-                const data = await flashReader.read(length);
+                const length = await reader.readUint32();
+                const data = await reader.read(length);
 
                 console.log(`< Data { connId: ${connId!}, length: ${data.length} }`);
 
@@ -92,14 +95,14 @@ flashServer.on('connection', async (flashSocket) => {
 
             case '<'.charCodeAt(0): {
                 const expected = 'policy-file-request/>\0';
-                const data = await flashReader.read(expected.length);
+                const data = await reader.read(expected.length);
                 if (data.toString('ascii') !== expected) {
                     throw new Error('message starting with \'<\' was not a policy file request');
                 }
 
                 const buffer = Buffer.allocUnsafe(POLICY_FILE.length);
                 buffer.write(POLICY_FILE, 'ascii');
-                flashWriter.write(buffer);
+                writer.write(buffer);
             } break;
 
             default: throw new Error(`invalid packet kind: ${kind}`);

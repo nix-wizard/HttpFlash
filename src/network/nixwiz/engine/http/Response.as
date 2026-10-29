@@ -1,15 +1,15 @@
-package network.nixwiz.http {
+package network.nixwiz.engine.http {
 	import flash.utils.ByteArray;
-	import network.nixwiz.Util;
+	import network.nixwiz.engine.Util;
 
 	public class Response {
 		public static const protocol:String = "HTTP/1.1";
 		
 		public var status:uint;
 
-		public var headers:Object = new Object();
+		public var headers:Object = {};
 
-		public var data:ByteArray = null;
+		public var body:ByteArray = null;
 
 		function Response(status:uint = 200) {
 			this.status = status;
@@ -24,14 +24,22 @@ package network.nixwiz.http {
 			return this;
 		}
 
-		public function setData(data:ByteArray):Response {
-			this.data = data;
-			addHeader('content-length', data.length.toString());
+		public function setBody(body:ByteArray):Response {
+			if (this.body != null) {
+				throw new ArgumentError('Response body already set');
+			}
+
+			this.body = body;
+			addHeader('content-length', body.length.toString());
 			return this;
 		}
 
 		public function setText(text:String):Response {
-			return setData(Util.encodeString(text));
+			return setBody(Util.encodeString(text));
+		}
+
+		public function setHTML(html:XML):Response {
+			return setText('<!DOCTYPE html>\n' + html.toXMLString());
 		}
 
 		public function serialize():ByteArray {
@@ -43,9 +51,9 @@ package network.nixwiz.http {
 			head += "\r\n";
 
 			bytes.writeUTFBytes(head);
-			if (data != null) {
-				data.position = 0;
-				bytes.writeBytes(data);
+			if (body != null) {
+				body.position = 0;
+				bytes.writeBytes(body);
 			}
 
 			bytes.position = 0;

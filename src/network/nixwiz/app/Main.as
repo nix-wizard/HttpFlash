@@ -1,12 +1,13 @@
-package network.nixwiz {
+package network.nixwiz.app {
 	import flash.display.Sprite;
-	import network.nixwiz.Logger;
+	import network.nixwiz.engine.Logger;
 	import flash.net.Socket;
-	import network.nixwiz.Promise;
-	import network.nixwiz.bridge.Bridge;
-	import network.nixwiz.http.Request;
-	import network.nixwiz.http.Server;
-	import network.nixwiz.http.Response;
+	import network.nixwiz.engine.Promise;
+	import network.nixwiz.engine.bridge.Bridge;
+	import network.nixwiz.engine.http.Request;
+	import network.nixwiz.engine.http.Server;
+	import network.nixwiz.engine.http.Response;
+	import network.nixwiz.engine.Logger;
 
 	public class Main extends Sprite {
 		function Main() {

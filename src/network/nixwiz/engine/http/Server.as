@@ -1,11 +1,11 @@
-package network.nixwiz.http {
-    import network.nixwiz.bridge.Bridge;
-    import network.nixwiz.bridge.Connection;
-    import network.nixwiz.io.Reader;
+package network.nixwiz.engine.http {
+    import network.nixwiz.engine.bridge.Bridge;
+    import network.nixwiz.engine.bridge.Connection;
+    import network.nixwiz.engine.io.Reader;
     import flash.utils.ByteArray;
-    import network.nixwiz.Promise;
-    import network.nixwiz.Logger;
-    import network.nixwiz.Util;
+    import network.nixwiz.engine.Promise;
+    import network.nixwiz.engine.Logger;
+    import network.nixwiz.engine.Util;
     import flash.system.Capabilities;
 
     // not sure if this should even be used as an instance... a static run() might do just fine

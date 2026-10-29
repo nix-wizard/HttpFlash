@@ -1,4 +1,4 @@
-package network.nixwiz.http {
+package network.nixwiz.engine.http {
 	public class Status {
 		// why the fuck does as3 not have enums
 		public static const OK:uint = 200;

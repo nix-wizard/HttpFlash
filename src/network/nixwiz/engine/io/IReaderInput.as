@@ -1,5 +1,5 @@
-package network.nixwiz.io {
-    import network.nixwiz.Promise;
+package network.nixwiz.engine.io {
+    import network.nixwiz.engine.Promise;
 
     /** An asynchronous input stream that yields chunks of indeterminate size. */
     public interface IReaderInput {

@@ -8,14 +8,14 @@ export class StreamEndedError extends Error {
 }
 
 export class Reader {
-	iterator: AsyncIterator<Buffer>;
-	chunks: Buffer[];
-	length: number;
+	readonly #iterator: AsyncIterator<Buffer>;
+	#chunks: Buffer[];
+	#length: number;
 
 	constructor(stream: Readable) {
-		this.iterator = stream[Symbol.asyncIterator]();
-		this.chunks = [];
-		this.length = 0;
+		this.#iterator = stream[Symbol.asyncIterator]();
+		this.#chunks = [];
+		this.#length = 0;
 	}
 
 	async read(size: number) {
@@ -23,31 +23,31 @@ export class Reader {
 			throw new RangeError('size must be a non-negative integer');
 		}
 
-		while (this.length < size) {
-			const { value, done } = await this.iterator.next();
+		while (this.#length < size) {
+			const { value, done } = await this.#iterator.next();
 			if (done) {
 				throw new StreamEndedError(`stream ended before ${size} bytes were available`);
 			}
 
-			this.chunks.push(value);
-			this.length += value.length;
+			this.#chunks.push(value);
+			this.#length += value.length;
 		}
 
 		const result = Buffer.allocUnsafe(size);
 		let offset = 0;
 		while (offset < size) {
-			const chunk = this.chunks[0];
+			const chunk = this.#chunks[0];
 			const count = Math.min(chunk.length, size - offset);
 
 			chunk.copy(result, offset, 0, count);
 			offset += count;
-			this.length -= count;
+			this.#length -= count;
 
 			if (count === chunk.length) {
-				this.chunks.shift();
+				this.#chunks.shift();
 			}
 			else {
-				this.chunks[0] = chunk.subarray(count);
+				this.#chunks[0] = chunk.subarray(count);
 			}
 		}
 
@@ -65,25 +65,45 @@ export class Reader {
 
 export class Writer {
 	stream: Writable;
+	chunks: Uint8Array[] = [];
+	size = 0;
+	maxBufferSize = 16384; // auto-flush threshold
 
 	constructor(stream: Writable) {
 		this.stream = stream;
 	}
 
-	write(value: ArrayBufferView) {
-		this.stream.write(value);
+	write(view: NodeJS.TypedArray) {
+		const buffer = view instanceof Uint8Array ? view : Buffer.copyBytesFrom(view);
+		this.chunks.push(buffer);
+		this.size += buffer.length;
+		if (this.size >= this.maxBufferSize) this.flush();
+	}
+
+	writeUint8(value: number) {
+		this.write(Buffer.from([value]));
 	}
 
 	#writeInt(value: number, size: number) {
 		if (value !== ~~value || value < 0 || value >= 2 ** (size * 8)) {
 			throw new RangeError('value out of range');
 		}
-
 		const buffer = Buffer.allocUnsafe(size);
 		buffer.writeUintBE(value, 0, size);
-		this.stream.write(buffer);
+		this.chunks.push(buffer);
+		this.size += size;
 	}
 
-	writeUint8(value: number) { this.#writeInt(value, 1); }
 	writeUint32(value: number) { this.#writeInt(value, 4); }
+
+	flush(): Promise<void> {
+		if (this.chunks.length === 0) { return Promise.resolve(); }
+
+		const buffer = Buffer.concat(this.chunks);
+		this.chunks = [];
+		this.size = 0;
+		return new Promise((resolve, reject) => {
+			this.stream.write(buffer, (err) => err == null ? resolve() : reject(err));
+		});
+	}
 }

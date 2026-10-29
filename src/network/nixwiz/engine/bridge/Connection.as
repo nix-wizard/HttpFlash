@@ -1,9 +1,9 @@
-package network.nixwiz.bridge {
+package network.nixwiz.engine.bridge {
 	import flash.utils.ByteArray;
-	import network.nixwiz.io.IReaderInput;
-	import network.nixwiz.Promise;
+	import network.nixwiz.engine.io.IReaderInput;
+	import network.nixwiz.engine.Promise;
 	import flash.net.Socket;
-	import network.nixwiz.Logger;
+	import network.nixwiz.engine.Logger;
 	import flash.errors.EOFError;
 
 	public class Connection implements IReaderInput {
@@ -26,7 +26,7 @@ package network.nixwiz.bridge {
 		public function readChunk():Promise {
 			return new Promise(function(resolve:Function, reject:Function):void {
 				onData = resolve;
-				onClose = function():void { reject(new EOFError()); }
+				onClose = function():void { reject(new EOFError()); };
 			});
 		}
 

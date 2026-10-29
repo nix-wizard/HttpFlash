@@ -1,8 +1,8 @@
-package network.nixwiz.http {
-    import network.nixwiz.io.Reader;
+package network.nixwiz.engine.http {
+    import network.nixwiz.engine.io.Reader;
     import flash.utils.ByteArray;
-    import network.nixwiz.Promise;
-    import network.nixwiz.Logger;
+    import network.nixwiz.engine.Promise;
+    import network.nixwiz.engine.Logger;
 
     public class Request extends RequestHead {
         public var body:ByteArray;
@@ -12,7 +12,10 @@ package network.nixwiz.http {
             this.body = body;
         }
 
-        /** Read the body of the request that <code>head</code> belongs to from <code>reader</code>. */
+        /**
+         * Read the body of the request that <code>head</code> belongs to from <code>reader</code>.
+         * @return A <code>Request</code> promise.
+         */
         public static function read(reader:Reader, head:RequestHead):Promise {
             if (head.headers.hasOwnProperty('content-length')) {
                 var length:Number = parseInt(head.headers['content-length']);
@@ -30,7 +33,7 @@ package network.nixwiz.http {
             }
         }
 
-        /** Decode the body as UTF-8. */
+        /** Decode the request body as UTF-8. */
         public function text():String {
             body.position = 0;
             var ret:String = body.readUTFBytes(body.length);

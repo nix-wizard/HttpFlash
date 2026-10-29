@@ -1,11 +1,11 @@
-package network.nixwiz.bridge {
+package network.nixwiz.engine.bridge {
     import flash.net.Socket;
-    import network.nixwiz.io.Reader;
-    import network.nixwiz.io.ReaderInputSocket;
-    import network.nixwiz.Promise;
+    import network.nixwiz.engine.io.Reader;
+    import network.nixwiz.engine.io.ReaderInputSocket;
+    import network.nixwiz.engine.Promise;
     import flash.utils.ByteArray;
-    import network.nixwiz.Logger;
-    import network.nixwiz.Util;
+    import network.nixwiz.engine.Logger;
+    import network.nixwiz.engine.Util;
     import flash.errors.EOFError;
 
     public class Bridge {
