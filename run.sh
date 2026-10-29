@@ -22,7 +22,7 @@ do
 	if [[ $declare != "" ]]; then
 		declare="$declare"$'\n'
 	fi
-	declare="$declare[Embed(source=\"assets/${file}\", mimeType=\"application/octet-stream\")] private static const File$i:Class;"
+	declare="$declare[Embed(source=\"assets${file}\", mimeType=\"application/octet-stream\")] private static const File$i:Class;"
 	if [[ $object != "" ]]; then
 		object="$object,"$'\n'
 	fi
