@@ -20,7 +20,7 @@ package network.nixwiz.app {
 				var file:File = Files.files["/static" + request.resource];
 				if (file != null) {
 					// https://developer.mozilla.org/en-US/docs/Web/HTTP/Reference/Headers/ETag
-					var etag:String = '"' + file + '"';
+					var etag:String = '"' + file.hash + '"';
 
 					if (request.headers.hasOwnProperty('if-none-match')){
 						var etags:Array = request.headers['if-none-match'].split(/,\s*/);
