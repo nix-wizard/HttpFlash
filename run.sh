@@ -7,6 +7,6 @@ echo '$ build.sh'
 
 (cd proxy; npm start | ts "%.T") &
 pid=$!
-sleep 1
+sleep 2
 RUST_LOG='avm_trace=info' ruffle bin/Main.swf --tcp-connections allow
 wait "$pid"
