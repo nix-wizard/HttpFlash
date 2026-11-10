@@ -8,7 +8,7 @@ package network.nixwiz.engine.http {
         public var body:ByteArray;
 
         function Request(head:RequestHead, body:ByteArray) {
-            super(head.method, head.resource, head.protocol, head.headers);
+            super(head.method, head.resource, head.queries, head.protocol, head.headers);
             this.body = body;
         }
 

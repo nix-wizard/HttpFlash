@@ -1,16 +1,21 @@
 package network.nixwiz.engine.http {
+	import mx.charts.AreaChart;
+
 	internal class RequestHead {
 		public var method:String;
 
 		public var resource:String;
 
+		public var queries:Object;
+
 		public var protocol:String;
 
 		public var headers:Object;
 
-		function RequestHead(method:String, resource:String, protocol:String, headers:Object) {
+		function RequestHead(method:String, resource:String, queries:Object, protocol:String, headers:Object) {
 			this.method = method;
 			this.resource = resource;
+			this.queries = queries;
 			this.protocol = protocol;
 			this.headers = headers;
 		}
@@ -27,7 +32,18 @@ package network.nixwiz.engine.http {
 			}
 
 			var method:String = firstLineParts[0];
-			var url:String = firstLineParts[1];
+			var resourceParts:Array = firstLineParts[1].split("?", 2);
+			var resource:String = resourceParts[0];
+			var queries:Object = new Object();
+			if (resourceParts.length == 2) {
+				for each (var query:String in resourceParts[1].split("&")) {
+					var queryParts:Array = query.split("=", 2);
+					if (queryParts.length !== 2) {
+						throw new ArgumentError('Invalid request: Invalid amount of = in a query string')
+					}
+					queries[queryParts[0]] = queryParts[1];
+				}
+			}
 			var protocol:String = firstLineParts[2];
 			if (protocol != "HTTP/1.1" && protocol != "HTTP/1.0") {
 				throw new ArgumentError("Invalid request: Invalid protocol");
@@ -45,7 +61,7 @@ package network.nixwiz.engine.http {
 				headers[parts[0].toLowerCase()] = parts[1];
 			}
 
-			return new RequestHead(method, url, protocol, headers);
+			return new RequestHead(method, resource, queries, protocol, headers);
 		}
 	}
 }
